@@ -8,7 +8,8 @@ massRocket = 173 #kg
 massMoon = 7.34767309 * 10**22 #kg
 
 forceRocketMoon
-
+forceRocketMoon = ((6.67*10**-11)*(massRocket)*(massMoon))/(31519**2)
+vForceRocketMoon = 
 
 forceMoonEarth = ((6.67*10**-11)*(massEarth)*(massMoon))/(38440**2)
 vForceMoonEarth = vector(0 ,-forceMoonEarth, 0)
