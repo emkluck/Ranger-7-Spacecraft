@@ -1,24 +1,56 @@
 Web VPython 3.2
 from visual import *
-earth = sphere(pos=vector(0,0,0), radius = 6371, color=color.cyan)
-moon = sphere(pos=vector(0,38440,0), radius = 1737.4, color=color.white)
-rocket = sphere(pos=vector(0,50+6371+500,0), radius = 500, color=color.red)
-massEarth = (5.97219 * 10**24) #kg
-massRocket = 173 #kg
-massMoon = 7.34767309 * 10**22 #kg
 
-forceRocketMoon
-forceRocketMoon = ((6.67*10**-11)*(massRocket)*(massMoon))/(31519**2)
-vForceRocketMoon = 
+G = 6.7e-11
+rearth = 6.4e6
+rmoon = 1.7e6
+mearth = 6e24 #kg
+mrocket = 173 #kg
+mmoon = 7.3e22 #kg
 
-forceMoonEarth = ((6.67*10**-11)*(massEarth)*(massMoon))/(38440**2)
-vForceMoonEarth = vector(0 ,-forceMoonEarth, 0)
-t = 0
-delta_t = 0.01
+#rearth*60 = distance from earth to moon
 
-while t >= 0 and t <= 100
 
-forceRocketEarth = ((6.67*10**-11)*(massRocket)*(massEarth))/(pos.x(rocket) - pos.x(earth) **2)
-fnetRocket = forceRocketMoon + forceRocketEarth
-rocketAcceleration = fnetRocket / massRocket
-vRocket = vRocket + 
+earth = sphere(pos=vec(0,0,0), radius = rearth, color=color.cyan)
+moon = sphere(pos=earth.pos+ vec(rearth*60,0,0), radius = rmoon, color=color.white, make_trail=True)
+moon.v = vec(0,1022,0)
+moon.p = mmoon*moon.v
+fgmoon = vec(0,0,0)
+
+rocket = sphere(pos=earth.pos + vec(-1*rearth+50,0,0), radius = 500, color=color.red, make_trail=True)
+rocket.v = vec(-4900,9999,0)
+rocket.p = mrocket*rocket.v
+fgrocket = vec(0,0,0)
+
+deltat=10
+t=0
+
+scene.center = vec(100*rearth,0,0)
+
+while t<1e100:
+    rate(10000)
+    vec.r2 = (rocket.pos-earth.pos)
+    vec.r3 = (rocket.pos-moon.pos)
+    vec.r2mag=mag(vec.r2)
+    vec.r3mag=mag(vec.r3)
+    
+    fgrocket = (-G*((mearth*mrocket)/(vec.r2mag**2))*(vec.r2/vec.r2mag))+(-G*((mmoon*mrocket)/(vec.r3mag**2))*vec.r3/vec.r3mag)
+
+    vec.r1 = moon.pos-earth.pos
+    vec.r1mag=mag(vec.r1)
+    fgmoon = -G*((mearth*mmoon)/(vec.r1mag**2))*(vec.r1/vec.r1mag)
+    
+    moon.p = moon.p+fgmoon*deltat
+    moon.v = moon.p/mmoon
+    moon.pos = moon.pos + moon.v*deltat
+    
+    rocket.p = rocket.p + fgrocket*deltat
+    rocket.v = rocket.p/mrocket
+    rocket.pos= rocket.pos+rocket.v*deltat
+    
+    t=t+deltat
+
+
+
+
+
